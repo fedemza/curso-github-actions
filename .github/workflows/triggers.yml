@@ -1,63 +1,53 @@
-name: Workflow con Triggers
-
+name: Triggers
+run-name: ¡Estoy aprendiendo a usar diferentes Triggers!
 on:
   push:
     branches:
-      - main
-  workflow_dispatch: # Permite ejecutar el workflow manualmente desde GitHub Actions.
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.js'
+  issues:
+    types:
+      - labeled
+  workflow_dispatch:
     inputs:
-      nombre:
-        description: "Nombre del usuario"
-        required: true
-        default: "Fede"
       lenguaje_favorito:
-        description: "Lenguaje favorito del usuario"
+        description: 'Lenguaje favorito'
+        default: JavaScript
         required: true
-        default: "JavaScript"
-
+        type: choice
+        options:
+        - JavaScript
+        - Python
+        - Go
+      nombre:
+        description: 'Fede'
+        required: true
+        default: Juan
+        type: string
+  schedule:
+    - cron: '15 22 * * *'
 jobs:
-  configurar-entorno:
+  hola-mundo-manual:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Crear archivo .env
-        run: echo "NOMBRE=${{ github.actor }}" > .env
-
-      - name: Definir variables de entorno
-        run: |
-          echo "USERNAME=${{ github.event.inputs.nombre }}" >> $GITHUB_ENV
-          echo "LANGUAGE=${{ github.event.inputs.lenguaje_favorito }}" >> $GITHUB_ENV
-
+      - name: Definir nombre
+        run: echo "NOMBRE=${{ inputs.nombre }}" >> $GITHUB_ENV
+      - name: Definir lenguaje
+        run: echo "LANGUAGE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
       - name: Correr script
         run: node main.js
-
   hola-mundo:
     if: ${{ github.event_name != 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-
-      - name: Instalar dependencias
-        run: npm ci
-
-      - name: Crear archivo .env
-        run: echo "NOMBRE=${{ github.actor }}" > .env
-
-      - name: Ejecutar main.js
-        run: node main.js
+      - name: Definir variable
+        run: echo "NOMBRE=${{ github.actor }}" >> $GITHUB_ENV
+      - name: Correr script
+        run: node mainjs
