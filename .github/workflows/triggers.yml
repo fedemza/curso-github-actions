@@ -1,0 +1,65 @@
+name: Aprendiendo Triggers
+run-name: ¡Estoy aprendiendo a usar diferentes Triggers!
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**.js'
+  issues:
+    types:
+      - labeled
+  workflow_dispatch:
+    inputs:
+      lenguaje_favorito:
+        description: 'Lenguaje favorito'
+        default: JavaScript
+        required: true
+        type: choice
+        options:
+        - JavaScript
+        - Python
+        - Go
+      nombre:
+        description: 'Tu nombre'
+        required: true
+        default: Juan
+        type: string
+  schedule:
+    - cron: '15 22 * * *'
+jobs:
+  hola-mundo-manual:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Crear archivo .env
+        run: echo "NOMBRE=${{ inputs.nombre }}" > .env
+      - name: Definir lenguaje
+        run: echo "LENGUAJE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
+      - name: Correr script
+        run: node main.js
+  hola-mundo:
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Crear archivo .env
+        run: echo "NOMBRE=${{ github.actor }}" > .env
+      - name: Correr script
+        run: node main.js
