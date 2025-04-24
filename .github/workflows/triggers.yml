@@ -1,4 +1,4 @@
-name: Triggers
+name: Aprendiendo Triggers
 run-name: ¡Estoy aprendiendo a usar diferentes Triggers!
 on:
   push:
@@ -41,8 +41,8 @@ jobs:
           node-version: 18
       - name: Instalar dependencias
         run: npm ci
-      - name: Definir nombre
-        run: echo "NOMBRE=${{ inputs.nombre }}" >> $GITHUB_ENV
+      - name: Crear archivo .env
+        run: echo "NOMBRE=${{ inputs.nombre }}" > .env
       - name: Definir lenguaje
         run: echo "LENGUAJE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
       - name: Correr script
@@ -59,7 +59,7 @@ jobs:
           node-version: 18
       - name: Instalar dependencias
         run: npm ci
-      - name: Definir variable
-        run: echo "NOMBRE=${{ github.actor }}" >> $GITHUB_ENV
+      - name: Crear archivo .env
+        run: echo "NOMBRE=${{ github.actor }}" > .env
       - name: Correr script
         run: node main.js
