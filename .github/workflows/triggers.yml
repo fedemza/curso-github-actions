@@ -23,7 +23,7 @@ on:
         - Python
         - Go
       nombre:
-        description: 'Fede'
+        description: 'Tu nombre'
         required: true
         default: Juan
         type: string
@@ -35,10 +35,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias
+        run: npm ci
       - name: Definir nombre
         run: echo "NOMBRE=${{ inputs.nombre }}" >> $GITHUB_ENV
       - name: Definir lenguaje
-        run: echo "LANGUAGE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
+        run: echo "LENGUAJE=${{ inputs.lenguaje_favorito }}" >> $GITHUB_ENV
       - name: Correr script
         run: node main.js
   hola-mundo:
@@ -47,7 +53,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - name: Instalar dependencias
+        run: npm ci
       - name: Definir variable
         run: echo "NOMBRE=${{ github.actor }}" >> $GITHUB_ENV
       - name: Correr script
-        run: node mainjs
+        run: node main.js
